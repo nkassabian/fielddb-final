@@ -1,0 +1,23 @@
+{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "your-server.js" }
+  ],
+  "env": {
+    "DATABASE_URL": "your-database-url"
+  },
+  "build": {
+    "commands": {
+      "build": "prisma generate && npm run build"
+    }
+  }
+}
