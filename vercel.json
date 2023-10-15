@@ -15,9 +15,5 @@
   "env": {
     "DATABASE_URL": "your-database-url"
   },
-  "build": {
-    "commands": {
-      "build": "prisma generate && npm run build"
-    }
-  }
+  "build": "prisma generate && npm run build"
 }
