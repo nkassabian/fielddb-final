@@ -12,7 +12,7 @@ const Providers = ({ children }: PropsWithChildren) => {
       links: [
         httpBatchLink({
           // url: "http://localhost:3000/api/trpc",
-          url: "https://https://fielddb.vercel.app/api/trpc",
+          url: "https://fielddb.vercel.app/api/trpc",
         }),
       ],
     })
