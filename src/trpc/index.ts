@@ -8,24 +8,27 @@ export const appRouter = router({
     const { getUser } = getKindeServerSession();
     const user = getUser();
     if (!user || !user.email) throw new TRPCError({ code: "UNAUTHORIZED" });
-    //check if user is in the DB
-    const dbUser = await db.user.findFirst({
-      where: {
-        id: user.id,
-      },
-    });
 
-    console.log("TRCP User", dbUser);
-    if (!dbUser) {
-      //create dbuser
-      await db.user.create({
-        data: {
-          id: user.id,
-          email: user.email,
+    if (user && user.id) {
+      //check if user is in the DB
+      const dbUser = await db.user.findFirst({
+        where: {
+          id: user?.id,
         },
       });
+
+      console.log("TRCP User", dbUser);
+      if (!dbUser) {
+        //create dbuser
+        await db.user.create({
+          data: {
+            id: user.id,
+            email: user.email,
+          },
+        });
+      }
+      return { success: true };
     }
-    return { success: true };
   }),
 });
 
