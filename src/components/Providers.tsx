@@ -11,7 +11,8 @@ const Providers = ({ children }: PropsWithChildren) => {
     trcp.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:3000/api/trpc",
+          // url: "http://localhost:3000/api/trpc",
+          url: "https://https://fielddb.vercel.app/api/trpc",
         }),
       ],
     })
