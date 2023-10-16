@@ -12,7 +12,6 @@ const Page = () => {
 
   trcp.authCallback.useQuery(undefined, {
     onSuccess: () => {
-      //user is synced
       router.push(origin ? `/${origin}` : "/dashboard");
     },
     onError: (err) => {

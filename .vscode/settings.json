@@ -1,0 +1,33 @@
+{
+  "todo-tree.general.tags": [
+    "BUG",
+    "HACK",
+    "FIXME",
+    "TODO",
+    "DONE",
+    "XXX",
+    "[ ]",
+    "[x]"
+  ],
+  "todo-tree.tree.autoRefresh": true,
+  "todo-tree.highlights.customHighlight": {
+    "BUG": {
+      "icon": "bug"
+    },
+    "HACK": {
+      "icon": "tools"
+    },
+    "FIXME": {
+      "icon": "flame"
+    },
+    "XXX": {
+      "icon": "x"
+    },
+    "[ ]": {
+      "icon": "issue-draft"
+    },
+    "[x]": {
+      "icon": "issue-closed"
+    }
+  }
+}
