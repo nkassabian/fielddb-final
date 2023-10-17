@@ -16,6 +16,7 @@ import {
   Tooltip,
   TooltipContent,
 } from "./ui/tooltip";
+import { useMemo } from "react";
 
 const dataTypes = [
   "int", // Default: 0
@@ -48,6 +49,14 @@ const dataTypes = [
 ];
 
 const TableSettingsRow = () => {
+  const dataTypesList = useMemo(() => {
+    return dataTypes.map((value) => (
+      <SelectItem key={value} value={value}>
+        {value}
+      </SelectItem>
+    ));
+  }, []); // Use an empty dependency array to memoize it once
+
   return (
     <div className="flex gap-1 items-end my-3">
       <Input className="w-full h-8 " type="text" />
@@ -56,24 +65,10 @@ const TableSettingsRow = () => {
           <SelectValue placeholder="datatype" />
         </SelectTrigger>
         <SelectContent className="h-52">
-          <SelectGroup>
-            {dataTypes &&
-              dataTypes.map((value) => (
-                <SelectItem key={value} value={value}>
-                  {value}
-                </SelectItem>
-              ))}
-          </SelectGroup>
+          {/* <SelectGroup>{dataTypesList}</SelectGroup> */}
         </SelectContent>
       </Select>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <Toggle className="h-8 w-8">N</Toggle>
-          </TooltipTrigger>
-          <TooltipContent>Is the column nullable?</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Toggle className="h-8 w-8">N</Toggle>
       <Toggle aria-label="Toggle italic" className="h-8 w-8 p-2">
         <KeyRound />
       </Toggle>
