@@ -72,7 +72,9 @@ const TableSettings = ({
                       style={{ backgroundColor: color }}
                       onClick={() => {
                         setSelectedColor(color);
-                        updateNodeColor(selectedNode?.id, color.toString());
+                        if (selectedNode != null) {
+                          updateNodeColor(selectedNode?.id, color.toString());
+                        }
                       }}
                     >
                       {selectedNode?.data.color === color ? <Check /> : <></>}
