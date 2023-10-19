@@ -24,6 +24,7 @@ type RFState = {
   updateTableNode: (nodeId: string, tableName: string) => void;
   updateNodeColor: (nodeId: string, color: string) => void;
   updateNodeRowName: (nodeId: string, rowId: number, name: string) => void;
+  updateNodeRowType: (nodeId: string, rowId: number, type: string) => void;
 };
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
@@ -73,6 +74,33 @@ export const RFStore = create<RFState>((set, get) => ({
                 if (row.id === rowId) {
                   // Create a new object for the updated row
                   return { ...row, name };
+                }
+                return row;
+              }),
+            },
+          };
+
+          return updatedNode;
+        }
+
+        return node;
+      }),
+    }));
+  },
+  updateNodeRowType: (nodeId: string, rowId: number, type: string) => {
+    console.log(name);
+    set((state) => ({
+      nodes: state.nodes.map((node) => {
+        if (node.id === nodeId) {
+          // Create a new object for the updated node
+          const updatedNode = {
+            ...node,
+            data: {
+              ...node.data,
+              columns: node.data.columns.map((row: { id: number }) => {
+                if (row.id === rowId) {
+                  // Create a new object for the updated row
+                  return { ...row, type };
                 }
                 return row;
               }),

@@ -16,7 +16,7 @@ import {
   Tooltip,
   TooltipContent,
 } from "./ui/tooltip";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RFStore } from "@/zustand/store";
 
 const dataTypes = [
@@ -50,19 +50,29 @@ const dataTypes = [
 ];
 
 const TableSettingsRow = ({
+  drawerOpened,
   colName,
   dataType,
   tableId,
   colId,
 }: {
+  drawerOpened: boolean;
   colName: string;
   colId: number;
   tableId: string;
   dataType: string;
 }) => {
   const updateNodeRowName = RFStore((s) => s.updateNodeRowName);
+  const updateNodeRowType = RFStore((s) => s.updateNodeRowType);
 
   const [rowName, setRowName] = useState(colName);
+  const [rowType, setRowType] = useState(dataType);
+
+  useEffect(() => {
+    if (drawerOpened === true) {
+      setRowType(dataType);
+    }
+  }, [drawerOpened]);
 
   const dataTypesList = useMemo(() => {
     return dataTypes.map((value) => (
@@ -84,7 +94,13 @@ const TableSettingsRow = ({
         }}
         type="text"
       />
-      <Select value={dataType}>
+      <Select
+        onValueChange={(value) => {
+          setRowType(value);
+          updateNodeRowType(tableId, colId, value);
+        }}
+        value={rowType}
+      >
         <SelectTrigger className="h-8">
           <SelectValue placeholder="datatype" />
         </SelectTrigger>

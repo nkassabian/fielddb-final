@@ -106,6 +106,7 @@ const TableSettings = ({
         selectedNode.data.columns.map(
           (col: { id: number; name: string; type: string }) => (
             <TableSettingsRow
+              drawerOpened={drawerOpened}
               key={col.id + col.name}
               tableId={selectedNode?.id}
               colId={col.id}
