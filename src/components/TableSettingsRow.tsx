@@ -16,7 +16,8 @@ import {
   Tooltip,
   TooltipContent,
 } from "./ui/tooltip";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { RFStore } from "@/zustand/store";
 
 const dataTypes = [
   "int", // Default: 0
@@ -48,7 +49,21 @@ const dataTypes = [
   "money", // Default: 0.00
 ];
 
-const TableSettingsRow = () => {
+const TableSettingsRow = ({
+  colName,
+  dataType,
+  tableId,
+  colId,
+}: {
+  colName: string;
+  colId: number;
+  tableId: string;
+  dataType: string;
+}) => {
+  const updateNodeRowName = RFStore((s) => s.updateNodeRowName);
+
+  const [rowName, setRowName] = useState(colName);
+
   const dataTypesList = useMemo(() => {
     return dataTypes.map((value) => (
       <SelectItem key={value} value={value}>
@@ -59,13 +74,22 @@ const TableSettingsRow = () => {
 
   return (
     <div className="flex gap-1 items-end my-3">
-      <Input className="w-full h-8 " type="text" />
-      <Select>
+      <Input
+        className="w-full h-8"
+        value={rowName}
+        onChange={(event) => {
+          setRowName(event.target.value);
+          console.log(event.target.value);
+          updateNodeRowName(tableId, colId, event.target.value);
+        }}
+        type="text"
+      />
+      <Select value={dataType}>
         <SelectTrigger className="h-8">
           <SelectValue placeholder="datatype" />
         </SelectTrigger>
         <SelectContent className="h-52">
-          {/* <SelectGroup>{dataTypesList}</SelectGroup> */}
+          <SelectGroup>{dataTypesList}</SelectGroup>
         </SelectContent>
       </Select>
       <Toggle className="h-8 w-8">N</Toggle>

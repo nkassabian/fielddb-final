@@ -15,7 +15,9 @@ import "reactflow/dist/style.css";
 import { cn } from "@/lib/utils";
 import TableSettings from "@/components/TableSettings";
 import { useStore } from "zustand";
-import { useAppStore } from "@/zustand/store";
+import { MainNoeStore, RFStore } from "@/zustand/store";
+import { shallow } from "zustand/shallow";
+import ERDTableNode from "@/components/ERDTableNode";
 
 interface PageProps {
   params: {
@@ -23,16 +25,34 @@ interface PageProps {
   };
 }
 
-//TODO: Add previous node
+const nodeTypes = { ERDTableNode: ERDTableNode };
+
+//TODO: Change type from ANY
+const selector = (state: any) => ({
+  nodes: state.nodes,
+  edges: state.edges,
+  onNodesChange: state.onNodesChange,
+  onEdgesChange: state.onEdgesChange,
+  onConnect: state.onConnect,
+});
+
+//TODO: Add table name change feature(using debounce).
 const Page = ({ params }: PageProps) => {
-  const drawerOpened = useAppStore((state) => state.drawerOpened);
-  const selectedNode = useAppStore((state) => state.selectedNode);
-  const setDrawerOpened = useAppStore((state) => state.setDrawerOpened);
-  const setSelectedNode = useAppStore((state) => state.setSelectedNode);
+  const drawerOpened = MainNoeStore((state) => state.drawerOpened);
+  const selectedNode = MainNoeStore((state) => state.selectedNode);
+  const setDrawerOpened = MainNoeStore((state) => state.setDrawerOpened);
+  const setSelectedNode = MainNoeStore((state) => state.setSelectedNode);
+
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = RFStore(
+    selector,
+    shallow
+  );
 
   const memoizedTableSettings = useMemo(
-    () => <TableSettings drawerOpened={drawerOpened} />,
-    [drawerOpened]
+    () => (
+      <TableSettings drawerOpened={drawerOpened} selectedNode={selectedNode} />
+    ),
+    [drawerOpened, selectedNode]
   );
 
   /**
@@ -56,33 +76,25 @@ const Page = ({ params }: PageProps) => {
     [selectedNode]
   );
 
-  const memoizedReactFlow = useMemo(() => {
-    const initialNodes = [
-      { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
-      { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
-    ];
-
-    return (
-      <ReactFlow
-        nodes={initialNodes}
-        onNodeClick={onNodeDoubleClick}
-        onPaneClick={() => {
-          setDrawerOpened(false);
-        }}
-      >
-        <Controls />
-        <Background />
-      </ReactFlow>
-    );
-  }, [onNodeDoubleClick]);
-
   return (
     <div className="flex-1 justify-between flex flex-col h-[calc(100vh-3.5rem)]">
       <div className="mx-auto w-full max-w-8xl grow lg:flex">
         {/* Left sidebar & main wrapper */}
         <div className="w-24 px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6 ">
           <div style={{ width: "100%", height: "100%" }}>
-            {memoizedReactFlow}
+            <ReactFlow
+              nodes={nodes}
+              onNodeClick={onNodeDoubleClick}
+              onNodesChange={onNodesChange}
+              fitView
+              nodeTypes={nodeTypes}
+              onPaneClick={() => {
+                setDrawerOpened(false);
+              }}
+            >
+              <Controls />
+              <Background />
+            </ReactFlow>
           </div>
         </div>
 

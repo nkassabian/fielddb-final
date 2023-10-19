@@ -3,24 +3,113 @@ import TableSettingsRow from "./TableSettingsRow";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-import { Label } from "./ui/label";
-import { Toggle } from "./ui/toggle";
-import { KeyRound, Trash2 } from "lucide-react";
+import { Check, Trash2 } from "lucide-react";
+import { NewerNode } from "@/initialData/nodes";
+import { RFStore } from "@/zustand/store";
+import { useEffect, useState } from "react";
 
-const TableSettings = ({ drawerOpened }: { drawerOpened: boolean }) => {
+const TableSettings = ({
+  drawerOpened,
+  selectedNode,
+}: {
+  drawerOpened: boolean;
+  selectedNode: NewerNode | null;
+}) => {
+  const updateTableName = RFStore((s) => s.updateTableNode);
+  const updateNodeColor = RFStore((s) => s.updateNodeColor);
+
+  const [tableName, setTableName] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("#ff0000");
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+  useEffect(() => {
+    if (selectedNode !== null) {
+      setTableName(selectedNode.data.label);
+    } else {
+      setTableName(""); // Handle the case where selectedNode is null
+    }
+  }, [selectedNode]);
+
+  const colorOptions = [
+    "#1abc9c",
+    "#2ecc71",
+    "#3498db",
+    "#9b59b6",
+    "#16a085",
+    "#27ae60",
+    "#2980b9",
+    "#8e44ad",
+    "#f1c40f",
+    "#e67e22",
+    "#e74c3c",
+    "#d35400",
+    "#c0392b",
+    // Add more color options as needed
+  ];
+
   return (
     <div className="m-5 p-5 border border-zinc-200 bg-white rounded-md">
       <div className="flex gap-5  items-end">
-        <div className="w-8 h-8 bg-red-500 rounded-md hover:cursor-pointer"></div>
-        <div className="flex flex-col gap-2">
-          <Input className="w-full h-8" type="text" />
+        <div className="flex flex-row gap-2">
+          {/*  */}
+
+          <div className="relative inline-block ">
+            <button
+              className="w-8 h-8 rounded-xl cursor-pointer"
+              style={{ backgroundColor: selectedNode?.data.color }}
+              onClick={toggleDropdown}
+            ></button>
+            {drawerOpened && isOpen && (
+              <div className="absolute -top-10 right-12 mt-10 w-32 p-1 rounded-xl bg-zinc-50 shadow-xl">
+                <div className="flex flex-wrap">
+                  {colorOptions.map((color) => (
+                    <button
+                      key={color}
+                      className="w-8 h-8 rounded-xl cursor-pointer m-1 flex items-center justify-center text-zinc-50"
+                      style={{ backgroundColor: color }}
+                      onClick={() => {
+                        setSelectedColor(color);
+                        updateNodeColor(selectedNode?.id, color.toString());
+                      }}
+                    >
+                      {selectedNode?.data.color === color ? <Check /> : <></>}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/*  */}
+          <Input
+            className="w-full h-8"
+            type="text"
+            value={tableName}
+            onChange={(event) => {
+              if (selectedNode != null) {
+                setTableName(event.target.value);
+
+                updateTableName(selectedNode?.id, event.target.value);
+              }
+            }}
+          />
         </div>
       </div>
 
       <div className="border-t my-3 border-zinc-200"></div>
-      <TableSettingsRow />
-      <TableSettingsRow />
-      <TableSettingsRow />
+      {selectedNode &&
+        selectedNode.data.columns.map((col) => (
+          <TableSettingsRow
+            tableId={selectedNode?.id}
+            colId={col.id}
+            colName={col.name}
+            dataType={col.type}
+          />
+        ))}
+
       <div className="border-t my-3 border-zinc-200"></div>
 
       <div
