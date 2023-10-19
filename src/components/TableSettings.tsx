@@ -101,14 +101,17 @@ const TableSettings = ({
 
       <div className="border-t my-3 border-zinc-200"></div>
       {selectedNode &&
-        selectedNode.data.columns.map((col) => (
-          <TableSettingsRow
-            tableId={selectedNode?.id}
-            colId={col.id}
-            colName={col.name}
-            dataType={col.type}
-          />
-        ))}
+        selectedNode.data.columns.map(
+          (col: { id: number; name: string; type: string }) => (
+            <TableSettingsRow
+              key={col.id + col.name}
+              tableId={selectedNode?.id}
+              colId={col.id}
+              colName={col.name}
+              dataType={col.type}
+            />
+          )
+        )}
 
       <div className="border-t my-3 border-zinc-200"></div>
 
