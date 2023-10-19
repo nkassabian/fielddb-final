@@ -104,7 +104,12 @@ const TableSettings = ({
       <div className="border-t my-3 border-zinc-200"></div>
       {selectedNode &&
         selectedNode.data.columns.map(
-          (col: { id: number; name: string; type: string }) => (
+          (col: {
+            id: number;
+            name: string;
+            type: string;
+            nullable: boolean;
+          }) => (
             <TableSettingsRow
               drawerOpened={drawerOpened}
               key={col.id + col.name}
@@ -112,6 +117,7 @@ const TableSettings = ({
               colId={col.id}
               colName={col.name}
               dataType={col.type}
+              nullable={col.nullable}
             />
           )
         )}

@@ -43,12 +43,14 @@ export default [
         {
           id: 1,
           key: true,
+          nullable: false,
           name: "id",
           type: "int",
         },
         {
           id: 2,
           key: false,
+          nullable: true,
           name: "name",
           type: "varchar(255)",
         },

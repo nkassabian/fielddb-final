@@ -36,7 +36,6 @@ const selector = (state: any) => ({
   onConnect: state.onConnect,
 });
 
-//TODO: Add table name change feature(using debounce).
 const Page = ({ params }: PageProps) => {
   const drawerOpened = MainNoeStore((state) => state.drawerOpened);
   const selectedNode = MainNoeStore((state) => state.selectedNode);

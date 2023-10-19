@@ -55,22 +55,27 @@ const TableSettingsRow = ({
   dataType,
   tableId,
   colId,
+  nullable,
 }: {
   drawerOpened: boolean;
   colName: string;
   colId: number;
   tableId: string;
   dataType: string;
+  nullable: boolean;
 }) => {
   const updateNodeRowName = RFStore((s) => s.updateNodeRowName);
   const updateNodeRowType = RFStore((s) => s.updateNodeRowType);
+  const updateNodeRowNullable = RFStore((s) => s.updateNodeRowNullable);
 
   const [rowName, setRowName] = useState(colName);
   const [rowType, setRowType] = useState(dataType);
+  const [isnullable, setIsNullable] = useState(nullable);
 
   useEffect(() => {
     if (drawerOpened === true) {
       setRowType(dataType);
+      setIsNullable(nullable);
     }
   }, [drawerOpened]);
 
@@ -108,7 +113,16 @@ const TableSettingsRow = ({
           <SelectGroup>{dataTypesList}</SelectGroup>
         </SelectContent>
       </Select>
-      <Toggle className="h-8 w-8">N</Toggle>
+      <Toggle
+        pressed={isnullable}
+        onPressedChange={(value) => {
+          setIsNullable(value);
+          updateNodeRowNullable(tableId, colId, value);
+        }}
+        className="h-8 w-8"
+      >
+        N
+      </Toggle>
       <Toggle aria-label="Toggle italic" className="h-8 w-8 p-2">
         <KeyRound />
       </Toggle>
