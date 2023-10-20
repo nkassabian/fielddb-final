@@ -111,10 +111,8 @@ export const RFStore = create<RFState>((set, get) => ({
               }),
             },
           };
-
           return updatedNode;
         }
-
         return node;
       }),
     }));
@@ -138,10 +136,33 @@ export const RFStore = create<RFState>((set, get) => ({
               }),
             },
           };
-
           return updatedNode;
         }
-
+        return node;
+      }),
+    }));
+  },
+  updateNodeRowPrimmarKey: (nodeId: string, rowId: number, key: boolean) => {
+    console.log(name);
+    set((state) => ({
+      nodes: state.nodes.map((node) => {
+        if (node.id === nodeId) {
+          // Create a new object for the updated node
+          const updatedNode = {
+            ...node,
+            data: {
+              ...node.data,
+              columns: node.data.columns.map((row: { id: number }) => {
+                if (row.id === rowId) {
+                  // Create a new object for the updated row
+                  return { ...row, key };
+                }
+                return row;
+              }),
+            },
+          };
+          return updatedNode;
+        }
         return node;
       }),
     }));

@@ -67,6 +67,7 @@ const TableSettingsRow = ({
   const updateNodeRowName = RFStore((s) => s.updateNodeRowName);
   const updateNodeRowType = RFStore((s) => s.updateNodeRowType);
   const updateNodeRowNullable = RFStore((s) => s.updateNodeRowNullable);
+  const onNodeChange = RFStore((s) => s.onNodesChange);
 
   const [rowName, setRowName] = useState(colName);
   const [rowType, setRowType] = useState(dataType);
@@ -77,7 +78,7 @@ const TableSettingsRow = ({
       setRowType(dataType);
       setIsNullable(nullable);
     }
-  }, [drawerOpened]);
+  }, [drawerOpened, onNodeChange]);
 
   const dataTypesList = useMemo(() => {
     return dataTypes.map((value) => (

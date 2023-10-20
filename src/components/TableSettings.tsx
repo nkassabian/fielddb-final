@@ -17,6 +17,7 @@ const TableSettings = ({
 }) => {
   const updateTableName = RFStore((s) => s.updateTableNode);
   const updateNodeColor = RFStore((s) => s.updateNodeColor);
+  const onNodeChange = RFStore((s) => s.onNodesChange);
 
   const [tableName, setTableName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,13 @@ const TableSettings = ({
       setTableName(selectedNode.data.label);
     } else {
       setTableName(""); // Handle the case where selectedNode is null
+    }
+  }, [selectedNode]);
+
+  useEffect(() => {
+    console.log("Log");
+    if (selectedNode != null) {
+      setSelectedColor(selectedNode?.data.color);
     }
   }, [selectedNode]);
 
@@ -59,7 +67,7 @@ const TableSettings = ({
           <div className="relative inline-block ">
             <button
               className="w-8 h-8 rounded-xl cursor-pointer"
-              style={{ backgroundColor: selectedNode?.data.color }}
+              style={{ backgroundColor: selectedColor }}
               onClick={toggleDropdown}
             ></button>
             {drawerOpened && isOpen && (
@@ -77,7 +85,7 @@ const TableSettings = ({
                         }
                       }}
                     >
-                      {selectedNode?.data.color === color ? <Check /> : <></>}
+                      {selectedColor === color ? <Check /> : <></>}
                     </button>
                   ))}
                 </div>
