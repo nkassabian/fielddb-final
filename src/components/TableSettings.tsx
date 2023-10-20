@@ -59,14 +59,19 @@ const TableSettings = ({
   ];
 
   return (
-    <div className="m-5 p-5 border border-zinc-200 bg-white rounded-md">
+    <div
+      className={
+        "m-5 p-5 border border-zinc-200 bg-white rounded-md transition-all ease-in-out duration-50 " +
+        (!drawerOpened ? "opcaity-0" : "opacity-1")
+      }
+    >
       <div className="flex gap-5  items-end">
         <div className="flex flex-row gap-2">
           {/*  */}
 
-          <div className="relative inline-block ">
+          <div className="relative inline-block">
             <button
-              className="w-8 h-8 rounded-xl cursor-pointer"
+              className="w-8 h-8 rounded-xl cursor-pointer "
               style={{ backgroundColor: selectedColor }}
               onClick={toggleDropdown}
             ></button>

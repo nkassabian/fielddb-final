@@ -10,6 +10,8 @@ import {
 } from "@kinde-oss/kinde-auth-nextjs/server";
 import UserAccountNav from "./UserAccountNav";
 import MobileNav from "./MobileNav";
+import logo from "../../public/logo.svg";
+import Image from "next/image";
 
 const Navbar = () => {
   var versionNum = process.env.VERSION_NUMBER;
@@ -19,7 +21,17 @@ const Navbar = () => {
     <div className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b dark:border-gray-700 border-gray-200 dark:bg-black/70 bg-white/75 backdrop-blur-lg transition-all">
       <MaxWidthWrapper>
         <div className="flex h-14 items-center justify-between border-b dark:border-zinc-700 border-zinc-200">
-          <Link href={"/"} className="flex z-40 font-semibold">
+          <Link
+            href={"/"}
+            className="flex z-40 font-semibold flex items-center justify-center"
+          >
+            <Image
+              width={10}
+              height={10}
+              className="h-6 w-6"
+              alt="logo"
+              src={"/logo.svg"}
+            />
             FieldDb
           </Link>
 

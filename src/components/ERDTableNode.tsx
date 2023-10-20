@@ -9,7 +9,7 @@ const ERDTableNode = ({ data }: any) => {
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead
-            className="text-x text-center text-white text-lg"
+            className="text-x text-center text-white text-md"
             style={{ backgroundColor: data.color }}
           >
             <tr>
@@ -30,7 +30,7 @@ const ERDTableNode = ({ data }: any) => {
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 >
                   <th className="h-4 w-4 pl-2">
-                    {col.key && <KeyRound className="h-4 w-4" />}
+                    {col.key && <KeyRound className="h-3 w-3" />}
                   </th>
                   <td
                     scope="row"
@@ -38,7 +38,9 @@ const ERDTableNode = ({ data }: any) => {
                   >
                     {col.name}
                   </td>
-                  <td className="px-3 py-2"> {col.type}</td>
+                  <td className="px-3 py-2">
+                    {col.type} <sup>🅽</sup>
+                  </td>
                 </tr>
               )
             )}
