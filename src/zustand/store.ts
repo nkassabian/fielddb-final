@@ -30,6 +30,7 @@ type RFState = {
     rowId: number,
     nullable: boolean
   ) => void;
+  appendColumnToNode: (nodeId: string) => void;
 };
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
@@ -143,7 +144,6 @@ export const RFStore = create<RFState>((set, get) => ({
     }));
   },
   updateNodeRowPrimmarKey: (nodeId: string, rowId: number, key: boolean) => {
-    console.log(name);
     set((state) => ({
       nodes: state.nodes.map((node) => {
         if (node.id === nodeId) {
@@ -166,6 +166,54 @@ export const RFStore = create<RFState>((set, get) => ({
         return node;
       }),
     }));
+  },
+  appendColumnToNode: (nodeId: string) => {
+    var newColumn = {
+      id: 1,
+      key: false,
+      name: "Column Name",
+      type: "int",
+    };
+    set((state) => {
+      // Find the maximum id value in the columns array of the specific node
+      const maxId = state.nodes.reduce((max, node) => {
+        if (node.id === nodeId) {
+          return Math.max(
+            ...node.data.columns.map((column: { id: any }) => column.id),
+            max
+          );
+        }
+        return max;
+      }, 0);
+
+      // Set the id of the new column to one more than the maximum id
+      newColumn.id = maxId + 1;
+
+      return {
+        nodes: state.nodes.map((node) => {
+          if (node.id === nodeId) {
+            // Create a new object for the updated node
+            const updatedNode = {
+              ...node,
+              data: {
+                ...node.data,
+                columns: [...node.data.columns, newColumn], // Append the new column
+              },
+            };
+            return updatedNode;
+          }
+          return node;
+        }),
+      };
+    });
+    const selectedNodeId = MainNoeStore.getState().selectedNode?.id;
+    const updatedNode = RFStore.getState().nodes.find(
+      (node) => node.id === selectedNodeId
+    );
+
+    if (updatedNode) {
+      MainNoeStore.getState().setSelectedNode(updatedNode);
+    }
   },
 }));
 

@@ -17,11 +17,20 @@ const TableSettings = ({
 }) => {
   const updateTableName = RFStore((s) => s.updateTableNode);
   const updateNodeColor = RFStore((s) => s.updateNodeColor);
-  const onNodeChange = RFStore((s) => s.onNodesChange);
+  const appendColumnToNode = RFStore((s) => s.appendColumnToNode);
+  const onNodesChange = RFStore((s) => s.onNodesChange);
 
   const [tableName, setTableName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#ff0000");
+  const [columns, setColumns] = useState(null);
+
+  useEffect(() => {
+    if (selectedNode != null) {
+      console.log(selectedNode);
+      setColumns(selectedNode.data.columns);
+    }
+  }, [selectedNode, onNodesChange]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -147,7 +156,16 @@ const TableSettings = ({
           <Trash2 className="h-4 w-4" />
           Delete Table
         </Button>
-        <Button variant={"ghost"}>Add Column</Button>
+        <Button
+          variant={"ghost"}
+          onClick={() => {
+            if (selectedNode != null) {
+              appendColumnToNode(selectedNode?.id);
+            }
+          }}
+        >
+          Add Column
+        </Button>
       </div>
     </div>
   );

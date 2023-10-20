@@ -1,7 +1,5 @@
 import React from "react";
-import { Key, KeyRound } from "lucide-react";
-import { Handle, NodeProps, Position } from "reactflow";
-import { RFStore } from "@/zustand/store";
+import { KeyRound } from "lucide-react";
 
 const ERDTableNode = ({ data }: any) => {
   return (
@@ -21,6 +19,7 @@ const ERDTableNode = ({ data }: any) => {
           <tbody className="text-xs">
             {data.columns.map(
               (col: {
+                nullable: boolean;
                 name: string | undefined;
                 key: boolean | undefined;
                 type: string | undefined;
@@ -39,7 +38,7 @@ const ERDTableNode = ({ data }: any) => {
                     {col.name}
                   </td>
                   <td className="px-3 py-2">
-                    {col.type} <sup>🅽</sup>
+                    {col.type} {col.nullable == true ? <sup>🅽</sup> : <></>}
                   </td>
                 </tr>
               )
