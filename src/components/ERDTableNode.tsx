@@ -1,5 +1,6 @@
 import React from "react";
 import { KeyRound } from "lucide-react";
+import { Handle, Position } from "reactflow";
 
 const ERDTableNode = ({ data }: any) => {
   return (
@@ -45,6 +46,10 @@ const ERDTableNode = ({ data }: any) => {
             )}
           </tbody>
         </table>
+        <Handle type="source" position={Position.Top} id="a" />
+        <Handle type="source" position={Position.Right} id="b" />
+        <Handle type="source" position={Position.Bottom} id="c" />
+        <Handle type="source" position={Position.Left} id="d" />
       </div>
     </>
   );

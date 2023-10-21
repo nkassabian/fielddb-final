@@ -3,21 +3,14 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RFStore } from "@/zustand/store";
+import { KeyRound } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { Input } from "./ui/input";
 import { Toggle } from "./ui/toggle";
-import { KeyRound } from "lucide-react";
-import {
-  TooltipProvider,
-  TooltipTrigger,
-  Tooltip,
-  TooltipContent,
-} from "./ui/tooltip";
-import { useEffect, useMemo, useState } from "react";
-import { RFStore } from "@/zustand/store";
 
 const dataTypes = [
   "int", // Default: 0
@@ -56,6 +49,7 @@ const TableSettingsRow = ({
   tableId,
   colId,
   nullable,
+  isPrimary,
 }: {
   drawerOpened: boolean;
   colName: string;
@@ -63,6 +57,7 @@ const TableSettingsRow = ({
   tableId: string;
   dataType: string;
   nullable: boolean;
+  isPrimary: boolean;
 }) => {
   const updateNodeRowName = RFStore((s) => s.updateNodeRowName);
   const updateNodeRowType = RFStore((s) => s.updateNodeRowType);
@@ -120,11 +115,16 @@ const TableSettingsRow = ({
           setIsNullable(value);
           updateNodeRowNullable(tableId, colId, value);
         }}
+        disabled={isPrimary}
         className="h-8 w-8"
       >
         N
       </Toggle>
-      <Toggle aria-label="Toggle italic" className="h-8 w-8 p-2">
+      <Toggle
+        pressed={isPrimary}
+        aria-label="Toggle italic"
+        className="h-8 w-8 p-2"
+      >
         <KeyRound />
       </Toggle>
     </div>

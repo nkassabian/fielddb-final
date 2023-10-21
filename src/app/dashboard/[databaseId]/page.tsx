@@ -1,23 +1,20 @@
 "use client";
 
-import React, { ReactNode, useCallback, useMemo, useState } from "react";
+import ERDTableNode from "@/components/ERDTableNode";
+import TableSettings from "@/components/TableSettings";
+import SimpleFloatingEdge from "@/components/edges/SimpleFloatingEdge";
+import { cn } from "@/lib/utils";
+import { MainNoeStore, RFStore } from "@/zustand/store";
+import React, { useCallback, useMemo } from "react";
 import ReactFlow, {
-  useNodesState,
-  useEdgesState,
-  addEdge,
-  Controls,
-  MiniMap,
   Background,
-  NodeMouseHandler,
+  ConnectionMode,
+  Controls,
   Node,
+  NodeMouseHandler,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { cn } from "@/lib/utils";
-import TableSettings from "@/components/TableSettings";
-import { useStore } from "zustand";
-import { MainNoeStore, RFStore } from "@/zustand/store";
 import { shallow } from "zustand/shallow";
-import ERDTableNode from "@/components/ERDTableNode";
 
 interface PageProps {
   params: {
@@ -26,7 +23,9 @@ interface PageProps {
 }
 
 const nodeTypes = { ERDTableNode: ERDTableNode };
-
+const edgeTypes = {
+  floating: SimpleFloatingEdge,
+};
 //TODO: Change type from ANY
 const selector = (state: any) => ({
   nodes: state.nodes,
@@ -83,10 +82,12 @@ const Page = ({ params }: PageProps) => {
           <div style={{ width: "100%", height: "100%" }}>
             <ReactFlow
               nodes={nodes}
+              edges={edges}
               onNodeClick={onNodeDoubleClick}
               onNodesChange={onNodesChange}
-              fitView
               nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              connectionMode={ConnectionMode.Loose}
               onPaneClick={() => {
                 setDrawerOpened(false);
               }}
@@ -100,7 +101,7 @@ const Page = ({ params }: PageProps) => {
         <div
           className={cn(
             "border-l border-zinc-300 transition-all duration-100 ease-in-out shadow-lg",
-            drawerOpened === true ? "w-[25%]" : "w-0"
+            drawerOpened === true ? "w-[25%] max-w-[450px]" : "w-0"
           )}
         >
           {memoizedTableSettings} {/* Render the memoized component */}

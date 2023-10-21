@@ -127,6 +127,7 @@ const TableSettings = ({
       {selectedNode &&
         selectedNode.data.columns.map(
           (col: {
+            key: boolean;
             id: number;
             name: string;
             type: string;
@@ -140,6 +141,7 @@ const TableSettings = ({
               colName={col.name}
               dataType={col.type}
               nullable={col.nullable}
+              isPrimary={col.key}
             />
           )
         )}
