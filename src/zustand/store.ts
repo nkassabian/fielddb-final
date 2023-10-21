@@ -29,6 +29,7 @@ type RFState = {
     value: any
   ) => void;
   appendColumnToNode: (nodeId: string) => void;
+  appendTableNode: () => void;
 };
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
@@ -181,8 +182,35 @@ export const RFStore = create<RFState>((set, get) => ({
       return [];
     }
 
-    const rowNames = table.data.columns.map((row) => row.name);
+    const rowNames = table.data.columns.map((row: any) => row.name);
     return rowNames;
+  },
+  appendTableNode: () => {
+    var name = "table" + Date.now();
+    var newNode = {
+      id: name,
+      type: "ERDTableNode",
+      data: {
+        label: name,
+        tablename: name,
+        color: "#2ecc71",
+        columns: [
+          {
+            id: 1,
+            key: true,
+            name: "id",
+            type: "int",
+          },
+        ],
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+    };
+    set((state) => ({
+      nodes: [...state.nodes, newNode], // Append the new table node
+    }));
   },
 }));
 
