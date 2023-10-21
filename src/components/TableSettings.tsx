@@ -7,6 +7,7 @@ import { Check, Trash2 } from "lucide-react";
 import { NewerNode } from "@/initialData/nodes";
 import { RFStore } from "@/zustand/store";
 import { useEffect, useState } from "react";
+import TableRelationshipsRow from "./TableRelationshipsRow";
 
 const TableSettings = ({
   drawerOpened,
@@ -68,108 +69,131 @@ const TableSettings = ({
   ];
 
   return (
-    <div
-      className={
-        "m-5 p-5 border border-zinc-200 bg-white rounded-md transition-all ease-in-out duration-50 " +
-        (!drawerOpened ? "opcaity-0" : "opacity-1")
-      }
-    >
-      <div className="flex gap-5  items-end">
-        <div className="flex flex-row gap-2">
-          {/*  */}
+    <>
+      <div className={!drawerOpened ? "hidden" : "visible"}>
+        <h1 className="text-2xl m-3 p-5 pb-0">Table Settings</h1>
+        <div className="bg-zinc-200 w-full "></div>
+        <div
+          className={
+            "m-5 p-5 border border-zinc-200 bg-white rounded-md transition-all ease-in-out duration-50 "
+          }
+        >
+          <div className="flex gap-5  items-end">
+            <div className="flex flex-row gap-2">
+              <div className="relative inline-block">
+                <button
+                  className="w-8 h-8 rounded-xl cursor-pointer "
+                  style={{ backgroundColor: selectedColor }}
+                  onClick={toggleDropdown}
+                ></button>
 
-          <div className="relative inline-block">
-            <button
-              className="w-8 h-8 rounded-xl cursor-pointer "
-              style={{ backgroundColor: selectedColor }}
-              onClick={toggleDropdown}
-            ></button>
-            {drawerOpened && isOpen && (
-              <div className="absolute -top-10 right-12 mt-10 w-32 p-1 rounded-xl bg-zinc-50 shadow-xl">
-                <div className="flex flex-wrap">
-                  {colorOptions.map((color) => (
-                    <button
-                      key={color}
-                      className="w-8 h-8 rounded-xl cursor-pointer m-1 flex items-center justify-center text-zinc-50"
-                      style={{ backgroundColor: color }}
-                      onClick={() => {
-                        setSelectedColor(color);
-                        if (selectedNode != null) {
-                          updateNodeColor(selectedNode?.id, color.toString());
-                        }
-                      }}
-                    >
-                      {selectedColor === color ? <Check /> : <></>}
-                    </button>
-                  ))}
+                <div
+                  className={
+                    "absolute -top-10 right-12 mt-10 w-32 p-1 rounded-xl bg-zinc-50 shadow-xl ease-in-out transition-all duration-150 " +
+                    (drawerOpened && isOpen ? "opacity-1" : "opacity-0")
+                  }
+                >
+                  <div className="flex flex-wrap">
+                    {colorOptions.map((color) => (
+                      <button
+                        key={color}
+                        className="w-8 h-8 rounded-xl cursor-pointer m-1 flex items-center justify-center text-zinc-50"
+                        style={{ backgroundColor: color }}
+                        onClick={() => {
+                          setSelectedColor(color);
+                          if (selectedNode != null) {
+                            updateNodeColor(selectedNode?.id, color.toString());
+
+                            setIsOpen(false);
+                          }
+                        }}
+                      >
+                        {selectedColor === color ? <Check /> : <></>}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            )}
+
+              {/*  */}
+              <Input
+                className="w-full h-8"
+                type="text"
+                value={tableName}
+                onChange={(event) => {
+                  if (selectedNode != null) {
+                    setTableName(event.target.value);
+
+                    updateTableName(selectedNode?.id, event.target.value);
+                  }
+                }}
+              />
+            </div>
           </div>
-
-          {/*  */}
-          <Input
-            className="w-full h-8"
-            type="text"
-            value={tableName}
-            onChange={(event) => {
-              if (selectedNode != null) {
-                setTableName(event.target.value);
-
-                updateTableName(selectedNode?.id, event.target.value);
-              }
-            }}
-          />
+          <div className="border-t my-3 border-zinc-200"></div>
+          {selectedNode &&
+            selectedNode.data.columns.map(
+              (col: {
+                key: boolean;
+                id: number;
+                name: string;
+                type: string;
+                nullable: boolean;
+              }) => (
+                <TableSettingsRow
+                  drawerOpened={drawerOpened}
+                  key={col.id + col.name}
+                  tableId={selectedNode?.id}
+                  colId={col.id}
+                  colName={col.name}
+                  dataType={col.type}
+                  nullable={col.nullable}
+                  isPrimary={col.key}
+                />
+              )
+            )}
+          <div className="border-t my-3 border-zinc-200"></div>
+          <div
+            className={cn(
+              "flex flex-row justify-end gap-2 transition-all duration-50 ease-out",
+              drawerOpened ? "opacity-1" : "opacity-0"
+            )}
+          >
+            <Button variant={"destructive"} className="flex flex-row gap-2">
+              <Trash2 className="h-4 w-4" />
+              Delete Table
+            </Button>
+            <Button
+              variant={"ghost"}
+              onClick={() => {
+                if (selectedNode != null) {
+                  appendColumnToNode(selectedNode?.id);
+                }
+              }}
+            >
+              Add Column
+            </Button>
+          </div>
         </div>
       </div>
-
       <div className="border-t my-3 border-zinc-200"></div>
-      {selectedNode &&
-        selectedNode.data.columns.map(
-          (col: {
-            key: boolean;
-            id: number;
-            name: string;
-            type: string;
-            nullable: boolean;
-          }) => (
-            <TableSettingsRow
-              drawerOpened={drawerOpened}
-              key={col.id + col.name}
-              tableId={selectedNode?.id}
-              colId={col.id}
-              colName={col.name}
-              dataType={col.type}
-              nullable={col.nullable}
-              isPrimary={col.key}
-            />
-          )
-        )}
-
-      <div className="border-t my-3 border-zinc-200"></div>
-
-      <div
-        className={cn(
-          "flex flex-row justify-end gap-2 transition-all duration-50 ease-out",
-          drawerOpened ? "opacity-1" : "opacity-0"
-        )}
-      >
-        <Button variant={"destructive"} className="flex flex-row gap-2">
-          <Trash2 className="h-4 w-4" />
-          Delete Table
-        </Button>
-        <Button
-          variant={"ghost"}
-          onClick={() => {
-            if (selectedNode != null) {
-              appendColumnToNode(selectedNode?.id);
-            }
-          }}
-        >
-          Add Column
-        </Button>
+      <div className="flex flex-row justify-center items-center m-3 p-5 gap-16">
+        <h1 className="text-2xl pb-0">Table Relationships</h1>
+        <Button>Add New</Button>
       </div>
-    </div>
+      <div className="bg-zinc-200 w-full "></div>
+      <div
+        className={
+          "m-5 p-5 border border-zinc-200 bg-white rounded-md transition-all ease-in-out duration-50 "
+        }
+      >
+        <div className="flex gap-5  items-end">
+          <div className="flex flex-row gap-2">
+            <TableRelationshipsRow />
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

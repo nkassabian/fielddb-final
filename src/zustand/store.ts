@@ -17,14 +17,16 @@ type RFState = {
   nodes: Node[];
   edges: Edge[];
   onNodesChange: OnNodesChange;
-  updateTableNode: (nodeId: string, tableName: string) => void;
+  updateTableNode: (nodeId: string, label: string) => void;
   updateNodeColor: (nodeId: string, color: string) => void;
-  updateNodeRowName: (nodeId: string, rowId: number, name: string) => void;
-  updateNodeRowType: (nodeId: string, rowId: number, type: string) => void;
-  updateNodeRowNullable: (
+  removeColumnFromNode: (nodeId: string, rowId: number) => void;
+  getAllTableNames: () => string[];
+  getTableRowNames: (tableId: string) => string[];
+  updateNodeProperty: (
     nodeId: string,
     rowId: number,
-    nullable: boolean
+    property: string,
+    value: any
   ) => void;
   appendColumnToNode: (nodeId: string) => void;
 };
@@ -50,6 +52,33 @@ export const RFStore = create<RFState>((set, get) => ({
       }),
     });
   },
+  updateNodeProperty: (
+    nodeId: string,
+    rowId: number,
+    property: string,
+    value: any
+  ) => {
+    set((state) => ({
+      nodes: state.nodes.map((node) => {
+        if (node.id === nodeId) {
+          const updatedNode = {
+            ...node,
+            data: {
+              ...node.data,
+              columns: node.data.columns.map((row: { id: number }) => {
+                if (row.id === rowId) {
+                  return { ...row, [property]: value };
+                }
+                return row;
+              }),
+            },
+          };
+          return updatedNode;
+        }
+        return node;
+      }),
+    }));
+  },
   updateNodeColor: (nodeId: string, color: string) => {
     console.log(nodeId);
     set({
@@ -62,107 +91,6 @@ export const RFStore = create<RFState>((set, get) => ({
         return node;
       }),
     });
-  },
-  updateNodeRowName: (nodeId: string, rowId: number, name: string) => {
-    console.log(name);
-    set((state) => ({
-      nodes: state.nodes.map((node) => {
-        if (node.id === nodeId) {
-          // Create a new object for the updated node
-          const updatedNode = {
-            ...node,
-            data: {
-              ...node.data,
-              columns: node.data.columns.map((row: { id: number }) => {
-                if (row.id === rowId) {
-                  // Create a new object for the updated row
-                  return { ...row, name };
-                }
-                return row;
-              }),
-            },
-          };
-
-          return updatedNode;
-        }
-
-        return node;
-      }),
-    }));
-  },
-  updateNodeRowType: (nodeId: string, rowId: number, type: string) => {
-    console.log(name);
-    set((state) => ({
-      nodes: state.nodes.map((node) => {
-        if (node.id === nodeId) {
-          // Create a new object for the updated node
-          const updatedNode = {
-            ...node,
-            data: {
-              ...node.data,
-              columns: node.data.columns.map((row: { id: number }) => {
-                if (row.id === rowId) {
-                  // Create a new object for the updated row
-                  return { ...row, type };
-                }
-                return row;
-              }),
-            },
-          };
-          return updatedNode;
-        }
-        return node;
-      }),
-    }));
-  },
-  updateNodeRowNullable: (nodeId: string, rowId: number, nullable: boolean) => {
-    console.log(name);
-    set((state) => ({
-      nodes: state.nodes.map((node) => {
-        if (node.id === nodeId) {
-          // Create a new object for the updated node
-          const updatedNode = {
-            ...node,
-            data: {
-              ...node.data,
-              columns: node.data.columns.map((row: { id: number }) => {
-                if (row.id === rowId) {
-                  // Create a new object for the updated row
-                  return { ...row, nullable };
-                }
-                return row;
-              }),
-            },
-          };
-          return updatedNode;
-        }
-        return node;
-      }),
-    }));
-  },
-  updateNodeRowPrimmarKey: (nodeId: string, rowId: number, key: boolean) => {
-    set((state) => ({
-      nodes: state.nodes.map((node) => {
-        if (node.id === nodeId) {
-          // Create a new object for the updated node
-          const updatedNode = {
-            ...node,
-            data: {
-              ...node.data,
-              columns: node.data.columns.map((row: { id: number }) => {
-                if (row.id === rowId) {
-                  // Create a new object for the updated row
-                  return { ...row, key };
-                }
-                return row;
-              }),
-            },
-          };
-          return updatedNode;
-        }
-        return node;
-      }),
-    }));
   },
   appendColumnToNode: (nodeId: string) => {
     var newColumn = {
@@ -211,6 +139,50 @@ export const RFStore = create<RFState>((set, get) => ({
     if (updatedNode) {
       MainNoeStore.getState().setSelectedNode(updatedNode);
     }
+  },
+  removeColumnFromNode: (nodeId: string, rowId: number) => {
+    set((state) => ({
+      nodes: state.nodes.map((node) => {
+        if (node.id === nodeId) {
+          const updatedNode = {
+            ...node,
+            data: {
+              ...node.data,
+              columns: node.data.columns.filter(
+                (row: { id: number }) => row.id !== rowId
+              ),
+            },
+          };
+          return updatedNode;
+        }
+        return node;
+      }),
+    }));
+    const selectedNodeId = MainNoeStore.getState().selectedNode?.id;
+    const updatedNode = RFStore.getState().nodes.find(
+      (node) => node.id === selectedNodeId
+    );
+
+    if (updatedNode) {
+      MainNoeStore.getState().setSelectedNode(updatedNode);
+    }
+  },
+  getAllTableNames: () => {
+    const tableNames = get()
+      .nodes // Assuming 'table' is the type of your tables
+      .map((node) => node.data.label);
+    return tableNames;
+  },
+  getTableRowNames: (tableId: string) => {
+    const table = get().nodes.find(
+      (node) => node.id === tableId && node.type === "table"
+    ); // Assuming 'table' is the type of your tables
+    if (!table) {
+      return [];
+    }
+
+    const rowNames = table.data.columns.map((row) => row.name);
+    return rowNames;
   },
 }));
 

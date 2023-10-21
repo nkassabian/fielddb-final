@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, LucideCheck } from "lucide-react";
@@ -157,6 +158,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

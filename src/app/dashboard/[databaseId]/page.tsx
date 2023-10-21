@@ -26,7 +26,7 @@ const nodeTypes = { ERDTableNode: ERDTableNode };
 const edgeTypes = {
   floating: SimpleFloatingEdge,
 };
-//TODO: Change type from ANY
+//[ ]: Change type from ANY
 const selector = (state: any) => ({
   nodes: state.nodes,
   edges: state.edges,

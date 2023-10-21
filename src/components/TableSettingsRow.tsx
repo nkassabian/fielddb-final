@@ -7,10 +7,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RFStore } from "@/zustand/store";
-import { KeyRound } from "lucide-react";
+import { KeyRound, MoreVertical, MoveVertical, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "./ui/input";
 import { Toggle } from "./ui/toggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 const dataTypes = [
   "int", // Default: 0
@@ -59,14 +68,15 @@ const TableSettingsRow = ({
   nullable: boolean;
   isPrimary: boolean;
 }) => {
-  const updateNodeRowName = RFStore((s) => s.updateNodeRowName);
-  const updateNodeRowType = RFStore((s) => s.updateNodeRowType);
-  const updateNodeRowNullable = RFStore((s) => s.updateNodeRowNullable);
+  const updateNodeProperty = RFStore((s) => s.updateNodeProperty);
   const onNodeChange = RFStore((s) => s.onNodesChange);
+  const removeColumnFromNode = RFStore((s) => s.removeColumnFromNode);
 
   const [rowName, setRowName] = useState(colName);
   const [rowType, setRowType] = useState(dataType);
   const [isnullable, setIsNullable] = useState(nullable);
+
+  const memoizedDataTypes = useMemo(() => dataTypes, []);
 
   useEffect(() => {
     if (drawerOpened === true) {
@@ -76,7 +86,7 @@ const TableSettingsRow = ({
   }, [drawerOpened, onNodeChange]);
 
   const dataTypesList = useMemo(() => {
-    return dataTypes.map((value) => (
+    return memoizedDataTypes.map((value) => (
       <SelectItem key={value} value={value}>
         {value}
       </SelectItem>
@@ -84,21 +94,39 @@ const TableSettingsRow = ({
   }, []); // Use an empty dependency array to memoize it once
 
   return (
-    <div className="flex gap-1 items-end my-3">
+    <div className="flex gap-1 my-3 items-center">
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <MoreVertical className="h-4 w-4" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>{rowName}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={() => {
+              removeColumnFromNode(tableId, colId);
+            }}
+            className="flex gap-2 cursor-pointer"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <Input
         className="w-full h-8"
         value={rowName}
         onChange={(event) => {
           setRowName(event.target.value);
           console.log(event.target.value);
-          updateNodeRowName(tableId, colId, event.target.value);
+          updateNodeProperty(tableId, colId, "name", event.target.value);
         }}
         type="text"
       />
       <Select
         onValueChange={(value) => {
           setRowType(value);
-          updateNodeRowType(tableId, colId, value);
+          updateNodeProperty(tableId, colId, "type", value);
         }}
         value={rowType}
       >
@@ -113,7 +141,7 @@ const TableSettingsRow = ({
         pressed={isnullable}
         onPressedChange={(value) => {
           setIsNullable(value);
-          updateNodeRowNullable(tableId, colId, value);
+          updateNodeProperty(tableId, colId, "nullable", value);
         }}
         disabled={isPrimary}
         className="h-8 w-8"
