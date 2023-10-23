@@ -3,10 +3,11 @@
 import ERDTableNode from "@/components/ERDTableNode";
 import { MenuBar } from "@/components/MenuBar";
 import TableSettings from "@/components/TableSettings";
+import NewTablePopUp from "@/components/dashboard/NewTablePopUp";
 import SimpleFloatingEdge from "@/components/edges/SimpleFloatingEdge";
 import { cn } from "@/lib/utils";
 import { Shortcuts } from "@/types/Shortcuts";
-import { MainNoeStore, RFStore } from "@/zustand/store";
+import { MainNoeStore, RFStore, TableCreationStore } from "@/zustand/store";
 import React, { useCallback, useEffect, useMemo } from "react";
 import ReactFlow, {
   Background,
@@ -72,6 +73,10 @@ const Page = ({ params }: PageProps) => {
   const appendTableNode = RFStore((state) => state.appendTableNode);
   const generateSQLServer = RFStore((state) => state.generateSQLServer);
 
+  const { isTablePopupShown, setIsTablePopupShown } = TableCreationStore(
+    (state) => state
+  );
+
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = RFStore(
     selector,
     shallow
@@ -105,8 +110,17 @@ const Page = ({ params }: PageProps) => {
     [selectedNode]
   );
 
+  const onNodesDelete = useCallback(() => {
+    setDrawerOpened(!drawerOpened);
+  }, [selectedNode]);
+
   useKeyCombinations([
-    { keys: ["Ctrl", "A"], action: appendTableNode },
+    {
+      keys: ["Ctrl", "A"],
+      action: () => {
+        setIsTablePopupShown(!isTablePopupShown);
+      },
+    },
     {
       keys: ["Ctrl", "G"],
       action: generateSQLServer,
@@ -121,6 +135,7 @@ const Page = ({ params }: PageProps) => {
   return (
     <div className="flex-1 justify-between flex flex-col h-[calc(100vh-3.5rem)]">
       <MenuBar />
+      <NewTablePopUp></NewTablePopUp>
 
       <div className="mx-auto w-full max-w-8xl grow lg:flex">
         {/* Left sidebar & main wrapper */}
@@ -134,6 +149,7 @@ const Page = ({ params }: PageProps) => {
               nodeTypes={nodeTypes}
               edgeTypes={edgeTypes}
               connectionMode={ConnectionMode.Loose}
+              onNodesDelete={onNodesDelete}
               onPaneClick={() => {
                 setDrawerOpened(false);
               }}
@@ -143,7 +159,6 @@ const Page = ({ params }: PageProps) => {
             </ReactFlow>
           </div>
         </div>
-
         <div
           className={cn(
             "border-l border-zinc-300 transition-all duration-100 ease-in-out shadow-lg",

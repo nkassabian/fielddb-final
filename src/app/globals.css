@@ -86,6 +86,10 @@
   right: -15px;
 }
 
+.react-flow__handle.connectionindicator {
+  visibility: hidden;
+}
+
 .simple-floatingedges .react-flow__node-custom {
   background: #fff;
   border: 1px solid #1a192b;

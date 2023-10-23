@@ -177,19 +177,21 @@ const TableSettings = ({
         </div>
       </div>
       <div className="border-t my-3 border-zinc-200"></div>
-      <div className="flex flex-row justify-center items-center m-3 p-5 gap-16">
-        <h1 className="text-2xl pb-0">Table Relationships</h1>
-        <Button>Add New</Button>
-      </div>
-      <div className="bg-zinc-200 w-full "></div>
-      <div
-        className={
-          "m-5 p-5 border border-zinc-200 bg-white rounded-md transition-all ease-in-out duration-50 "
-        }
-      >
-        <div className="flex gap-5  items-end">
-          <div className="flex flex-row gap-2">
-            {/* <TableRelationshipsRow /> */}
+      <div className={!drawerOpened ? "hidden" : "visible"}>
+        <div className="flex flex-row justify-center items-center m-3 p-5 gap-16">
+          <h1 className="text-2xl pb-0">Table Relationships</h1>
+          <Button>Add New</Button>
+        </div>
+        <div className="bg-zinc-200 w-full "></div>
+        <div
+          className={
+            "m-5 p-5 border border-zinc-200 bg-white rounded-md transition-all ease-in-out duration-50 "
+          }
+        >
+          <div className="flex gap-5  items-end">
+            <div className="flex flex-row gap-2">
+              {/* <TableRelationshipsRow /> */}
+            </div>
           </div>
         </div>
       </div>

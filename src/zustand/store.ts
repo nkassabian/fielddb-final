@@ -10,6 +10,7 @@ import { create } from "zustand";
 
 import initialEdges from "./../initialData/edges";
 import initialNodes from "./../initialData/nodes";
+import { boolean } from "zod";
 
 //TODO: Add color input isOpened state in here, need it to be global
 
@@ -29,7 +30,7 @@ type RFState = {
     value: any
   ) => void;
   appendColumnToNode: (nodeId: string) => void;
-  appendTableNode: () => void;
+  appendTableNode: (tableName: string) => void;
   generateSQLServer: () => void;
 };
 
@@ -186,13 +187,12 @@ export const RFStore = create<RFState>((set, get) => ({
     const rowNames = table.data.columns.map((row: any) => row.name);
     return rowNames;
   },
-  appendTableNode: () => {
-    var name = "table" + Date.now();
+  appendTableNode: (tableName: string) => {
     var newNode = {
-      id: name,
+      id: tableName,
       type: "ERDTableNode",
       data: {
-        label: name,
+        label: tableName,
         color: "#2ecc71",
         columns: [
           {
@@ -238,6 +238,20 @@ export const MainNoeStore = create<SelectedNodeHandler>((set) => ({
     set((state) => ({
       ...state,
       selectedNode: node,
+    })),
+}));
+
+type TableCreationStore = {
+  isTablePopupShown: boolean;
+  setIsTablePopupShown: (value: boolean) => void;
+};
+
+export const TableCreationStore = create<TableCreationStore>((set) => ({
+  isTablePopupShown: false,
+  setIsTablePopupShown: (value: boolean) =>
+    set((state) => ({
+      ...state,
+      isTablePopupShown: value,
     })),
 }));
 

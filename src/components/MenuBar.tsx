@@ -10,11 +10,13 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { RFStore } from "@/zustand/store";
+import { RFStore, TableCreationStore } from "@/zustand/store";
 
 export function MenuBar() {
   const appendTableNode = RFStore((state) => state.appendTableNode);
-
+  const setIsTablePopupShown = TableCreationStore(
+    (state) => state.setIsTablePopupShown
+  );
   return (
     <Menubar className="border-none shadow-md">
       <MenubarMenu>
@@ -22,7 +24,8 @@ export function MenuBar() {
         <MenubarContent>
           <MenubarItem
             onClick={() => {
-              appendTableNode();
+              setIsTablePopupShown(true);
+              // appendTableNode();
             }}
           >
             Add Table <MenubarShortcut>⌘A</MenubarShortcut>
