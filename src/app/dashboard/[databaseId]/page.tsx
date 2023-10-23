@@ -5,6 +5,7 @@ import { MenuBar } from "@/components/MenuBar";
 import TableSettings from "@/components/TableSettings";
 import SimpleFloatingEdge from "@/components/edges/SimpleFloatingEdge";
 import { cn } from "@/lib/utils";
+import { Shortcuts } from "@/types/Shortcuts";
 import { MainNoeStore, RFStore } from "@/zustand/store";
 import React, { useCallback, useEffect, useMemo } from "react";
 import ReactFlow, {
@@ -22,6 +23,33 @@ interface PageProps {
     databaseId: string;
   };
 }
+
+const useKeyCombinations = (combinations: Shortcuts[]) => {
+  const handleKeyPress = (event: KeyboardEvent) => {
+    for (const combo of combinations) {
+      const isMatch = combo.keys.every((key) => {
+        const normalizedKey = key.toLowerCase();
+        if (normalizedKey === "ctrl" || normalizedKey === "command") {
+          return event.ctrlKey || event.metaKey;
+        }
+        return event.key.toLowerCase() === normalizedKey;
+      });
+
+      if (isMatch) {
+        event.preventDefault(); // Prevent the default browser behavior
+        combo.action(); // Execute the specified function
+        break; // Break the loop after the first match
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [combinations]);
+};
 
 const nodeTypes = { ERDTableNode: ERDTableNode };
 const edgeTypes = {
@@ -42,6 +70,7 @@ const Page = ({ params }: PageProps) => {
   const setDrawerOpened = MainNoeStore((state) => state.setDrawerOpened);
   const setSelectedNode = MainNoeStore((state) => state.setSelectedNode);
   const appendTableNode = RFStore((state) => state.appendTableNode);
+  const generateSQLServer = RFStore((state) => state.generateSQLServer);
 
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = RFStore(
     selector,
@@ -76,38 +105,19 @@ const Page = ({ params }: PageProps) => {
     [selectedNode]
   );
 
-  const handleKeyPress = useCallback(
-    (event: {
-      ctrlKey: any;
-      metaKey: any;
-      key: string;
-      preventDefault: () => void;
-    }) => {
-      // Check if the Ctrl (or Command on Mac) key and Shift key are pressed
-      if ((event.ctrlKey || event.metaKey) && event.key === "a") {
-        event.preventDefault();
-
-        // Call your custom function here
-        customFunction();
-      }
+  useKeyCombinations([
+    { keys: ["Ctrl", "A"], action: appendTableNode },
+    {
+      keys: ["Ctrl", "G"],
+      action: generateSQLServer,
     },
-    []
-  );
-
-  const customFunction = () => {
-    appendTableNode();
-  };
-
-  useEffect(() => {
-    // Attach the event listener
-    document.addEventListener("keydown", handleKeyPress);
-
-    // Remove the event listener
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [handleKeyPress]);
-
+    {
+      keys: ["Ctrl", "S"],
+      action: () => {
+        console.log("Save Action");
+      },
+    },
+  ]);
   return (
     <div className="flex-1 justify-between flex flex-col h-[calc(100vh-3.5rem)]">
       <MenuBar />

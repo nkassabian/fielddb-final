@@ -30,6 +30,7 @@ type RFState = {
   ) => void;
   appendColumnToNode: (nodeId: string) => void;
   appendTableNode: () => void;
+  generateSQLServer: () => void;
 };
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
@@ -192,7 +193,6 @@ export const RFStore = create<RFState>((set, get) => ({
       type: "ERDTableNode",
       data: {
         label: name,
-        tablename: name,
         color: "#2ecc71",
         columns: [
           {
@@ -212,6 +212,10 @@ export const RFStore = create<RFState>((set, get) => ({
       nodes: [...state.nodes, newNode], // Append the new table node
     }));
   },
+
+  generateSQLServer: () => {
+    return console.log(generateSQLFromTableDataArray(get().nodes));
+  },
 }));
 
 // Define the state shape
@@ -222,7 +226,6 @@ type SelectedNodeHandler = {
   selectedNode: Node<any, string | undefined> | null;
 };
 
-// Create your Zustand store
 export const MainNoeStore = create<SelectedNodeHandler>((set) => ({
   drawerOpened: false,
   selectedNode: null,
@@ -237,3 +240,51 @@ export const MainNoeStore = create<SelectedNodeHandler>((set) => ({
       selectedNode: node,
     })),
 }));
+
+function generateSQLFromTableDataArray(tableDataArray: any[]) {
+  const sqlStatements = tableDataArray.map((tableData) => {
+    if (
+      !tableData.id ||
+      !tableData.data ||
+      !tableData.data.label ||
+      !tableData.data.columns
+    ) {
+      console.error("Invalid table data format.");
+      return "";
+    }
+
+    const tableName = tableData.data.tablename || tableData.data.label;
+    const columns = tableData.data.columns;
+
+    if (!tableName || columns.length === 0) {
+      console.error("Invalid table data format.");
+      return "";
+    }
+
+    const columnSQL = columns
+      .map((column: { name: any; type: any; key: any; nullable: boolean }) => {
+        if (!column.name || !column.type) {
+          console.error("Invalid column data format.");
+          return "";
+        }
+
+        const columnName = column.name;
+        const columnType = column.type;
+        const isPrimaryKey = column.key ? " PRIMARY KEY" : "";
+        const isNullable = column.nullable === false ? " NOT NULL" : "";
+
+        return `[${columnName}] ${columnType}${isPrimaryKey}${isNullable}`;
+      })
+      .filter((columnSQL: string | any[]) => columnSQL.length > 0)
+      .join(",\n  ");
+
+    if (columnSQL.length === 0) {
+      console.error("No valid columns found.");
+      return "";
+    }
+
+    return `CREATE TABLE IF NOT EXISTS [${tableName}] (\n  ${columnSQL}\n);`;
+  });
+
+  return sqlStatements.join("\n\n");
+}

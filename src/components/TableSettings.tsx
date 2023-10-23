@@ -7,7 +7,7 @@ import { Check, Trash2 } from "lucide-react";
 import { NewerNode } from "@/initialData/nodes";
 import { RFStore } from "@/zustand/store";
 import { useEffect, useState } from "react";
-import TableRelationshipsRow from "./TableRelationshipsRow";
+// import TableRelationshipsRow from "./TableRelationshipsRow";
 
 const TableSettings = ({
   drawerOpened,
@@ -189,7 +189,7 @@ const TableSettings = ({
       >
         <div className="flex gap-5  items-end">
           <div className="flex flex-row gap-2">
-            <TableRelationshipsRow />
+            {/* <TableRelationshipsRow /> */}
           </div>
         </div>
       </div>
