@@ -10,13 +10,15 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { RFStore, TableCreationStore } from "@/zustand/store";
-import { useState } from "react";
+import React, { useState } from "react";
+import { XYPosition, useReactFlow } from "reactflow";
 
 const NewTablePopUp = () => {
   const [creationTableName, setCreationTableName] = useState("");
   const { isTablePopupShown, setIsTablePopupShown } = TableCreationStore(
     (state) => state
   );
+
   const appendTableNode = RFStore((state) => state.appendTableNode);
 
   return (

@@ -4,6 +4,8 @@ import {
   Node,
   NodeChange,
   OnNodesChange,
+  Position,
+  XYPosition,
   applyNodeChanges,
 } from "reactflow";
 import { create } from "zustand";
@@ -11,6 +13,7 @@ import { create } from "zustand";
 import initialEdges from "./../initialData/edges";
 import initialNodes from "./../initialData/nodes";
 import { boolean } from "zod";
+import { useCallback } from "react";
 
 //TODO: Add color input isOpened state in here, need it to be global
 
@@ -188,31 +191,40 @@ export const RFStore = create<RFState>((set, get) => ({
     return rowNames;
   },
   appendTableNode: (tableName: string) => {
-    var newNode = {
-      id: tableName,
-      type: "ERDTableNode",
-      data: {
-        label: tableName,
-        color: "#2ecc71",
-        columns: [
-          {
-            id: 1,
-            key: true,
-            name: "id",
-            type: "int",
-          },
-        ],
-      },
-      position: {
-        x: 0,
-        y: 0,
-      },
-    };
-    set((state) => ({
-      nodes: [...state.nodes, newNode], // Append the new table node
-    }));
-  },
+    const reactFlowContainer = document.querySelector(".react-flow");
+    const reactFlowBounds = reactFlowContainer?.getBoundingClientRect();
 
+    var center: XYPosition;
+    if (reactFlowBounds != undefined) {
+      center = {
+        x: (reactFlowBounds.width / 2) * 0.9,
+        y: (reactFlowBounds.height / 2) * 0.8,
+      };
+      var newNode = {
+        id: tableName,
+        type: "ERDTableNode",
+        data: {
+          label: tableName,
+          color: "#2ecc71",
+          columns: [
+            {
+              id: 1,
+              key: true,
+              name: "id",
+              type: "int",
+            },
+          ],
+        },
+        position: {
+          x: center.x,
+          y: center.y,
+        },
+      };
+      set((state) => ({
+        nodes: [...state.nodes, newNode], // Append the new table node
+      }));
+    }
+  },
   generateSQLServer: () => {
     return console.log(generateSQLFromTableDataArray(get().nodes));
   },

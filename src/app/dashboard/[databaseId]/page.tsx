@@ -13,8 +13,11 @@ import ReactFlow, {
   Background,
   ConnectionMode,
   Controls,
+  MiniMap,
   Node,
   NodeMouseHandler,
+  XYPosition,
+  useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { shallow } from "zustand/shallow";
@@ -153,7 +156,9 @@ const Page = ({ params }: PageProps) => {
               onPaneClick={() => {
                 setDrawerOpened(false);
               }}
+              onlyRenderVisibleElements={true}
             >
+              <MiniMap />
               <Controls />
               <Background />
             </ReactFlow>
