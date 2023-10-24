@@ -2,6 +2,7 @@
 
 import ERDTableNode from "@/components/ERDTableNode";
 import { MenuBar } from "@/components/MenuBar";
+import TableRelationshipsRow from "@/components/TableRelationshipsRow";
 import TableSettings from "@/components/TableSettings";
 import NewTablePopUp from "@/components/dashboard/NewTablePopUp";
 import SimpleFloatingEdge from "@/components/edges/SimpleFloatingEdge";

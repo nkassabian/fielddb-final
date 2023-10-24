@@ -93,6 +93,20 @@ export default function Home() {
         <div className="mb-12 px-6 lg:px-8">
           <div className="mx-auto max-w-2xl sm:text-center">
             <h2 className="mt-2 font-bold text-4xl text-gray-900 dark:text-white sm:text-5xl">
+              Forward Engineering Easily
+            </h2>
+            <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
+              Place nodes, create relationsips, and get your code!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* {Feature section} */}
+      <div className="mx-auto mb-32 mt-32 max-w-5xl sm:mt-56">
+        <div className="mb-12 px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl sm:text-center">
+            <h2 className="mt-2 font-bold text-4xl text-gray-900 dark:text-white sm:text-5xl">
               Start Generating in Minutes
             </h2>
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">

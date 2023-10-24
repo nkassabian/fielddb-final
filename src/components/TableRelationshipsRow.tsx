@@ -1,45 +1,45 @@
-// import {
-//   Select,
-//   SelectContent,
-//   SelectGroup,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { RFStore } from "@/zustand/store";
-// import { useEffect, useMemo, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RFStore } from "@/zustand/store";
+import { useEffect, useMemo, useState } from "react";
 
-// //[ ] When table has been added, the name isnt reflecting.
-// const TableRelationshipsRow = () => {
-//   const getTableNames = RFStore((s) => s.getAllTableNames);
-//   const onNodesChange = RFStore((s) => s.onNodesChange);
+//[ ] When table has been added, the name isnt reflecting.
+const TableRelationshipsRow = () => {
+  const getTableNames = RFStore((s) => s.getAllTableNames);
 
-//   const [tableNames, setTableNames] = useState(getTableNames);
+  const nodes = RFStore((s) => s.nodes);
 
-//   useEffect(() => {
-//     setTableNames(getTableNames());
-//     console.log("Insides");
-//   }, [onNodesChange]);
+  const [tableNames, setTableNames] = useState(getTableNames);
 
-//   const dataTypesList = useMemo(() => {
-//     return tableNames.map((value) => (
-//       <SelectItem key={value} value={value}>
-//         {value}
-//       </SelectItem>
-//     ));
-//   }, []);
-//   return (
-//     <div className="flex gap-1 my-3 items-center">
-//       <Select>
-//         <SelectTrigger className="h-auto">
-//           <SelectValue placeholder="datatype" />
-//         </SelectTrigger>
-//         <SelectContent className="h-52">
-//           <SelectGroup>{dataTypesList}</SelectGroup>
-//         </SelectContent>
-//       </Select>
-//     </div>
-//   );
-// };
+  useEffect(() => {
+    setTableNames(getTableNames());
+  }, [nodes]);
 
-// export default TableRelationshipsRow;
+  const dataTypesList = useMemo(() => {
+    return tableNames.map((value) => (
+      <SelectItem key={value} value={value}>
+        {value}
+      </SelectItem>
+    ));
+  }, [tableNames]);
+  return (
+    <div className="flex gap-1 my-3 items-center">
+      <Select>
+        <SelectTrigger className="h-auto">
+          <SelectValue placeholder="datatype" />
+        </SelectTrigger>
+        <SelectContent className="h-52">
+          <SelectGroup>{dataTypesList}</SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
+export default TableRelationshipsRow;

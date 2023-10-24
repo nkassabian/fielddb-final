@@ -114,7 +114,7 @@ const TableSettingsRow = ({
         </DropdownMenuContent>
       </DropdownMenu>
       <Input
-        className="w-full h-8"
+        className="w-full h-6 p-1"
         value={rowName}
         onChange={(event) => {
           setRowName(event.target.value);
@@ -130,7 +130,7 @@ const TableSettingsRow = ({
         }}
         value={rowType}
       >
-        <SelectTrigger className="h-8">
+        <SelectTrigger className="h-6 p-1 text-xs">
           <SelectValue placeholder="datatype" />
         </SelectTrigger>
         <SelectContent className="h-52">
@@ -144,14 +144,14 @@ const TableSettingsRow = ({
           updateNodeProperty(tableId, colId, "nullable", value);
         }}
         disabled={isPrimary}
-        className="h-8 w-8"
+        className="h-6 w-6"
       >
         N
       </Toggle>
       <Toggle
         pressed={isPrimary}
         aria-label="Toggle italic"
-        className="h-8 w-8 p-2"
+        className="h-6 w-6 p-1"
       >
         <KeyRound />
       </Toggle>
